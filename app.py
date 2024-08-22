@@ -163,31 +163,36 @@ def check_reservations_in_date_range(start_date, end_date, room_number, person_q
         display_table('reserveTable')
     else:
         print("No reservations found in the given date range.")
-        if input("Do you want to register it? (y/n): ").lower() == "y":
-            last_request_id = get_last_request_id()
-            insert_data('reserveTable', ['roomNumber', 'requestID', 'startDate', 'endDate', 'personQty', 'registerationDate'],
-                        [room_number, last_request_id, start_date, end_date, person_qty, current_date])
-            name = input("What is your name? ")
-            familyName = input("What is your family name? ")
-            codeMelli = int(input("What is your melli code? "))
-            if check_codeMelli_in_personTable == True:
-                insert_data('request_personTable',['requestID', 'codeMelli'], [last_request_id, codeMelli])
-            else:
-                insert_data('personTable', ['codeMelli', 'name', 'familyName'], [codeMelli, name, familyName])
-                insert_data('request_personTable',['requestID', 'codeMelli'], [last_request_id, codeMelli])
+        #if input("Do you want to register it? (y/n): ").lower() == "y":
+            
 
 
-            for hamrah in range(person_qty-1):
-                name = input("What is your hamrah name? ")
-                familyName = input("What is your hamrah family name? ")
-                codeMelli = int(input("What is your hamrah melli code? "))
+def registeration(room_number, person_qty):
+    last_request_id = get_last_request_id()
+    insert_data('reserveTable', ['roomNumber', 'requestID', 'startDate', 'endDate', 'personQty', 'registerationDate'],
+                [room_number, last_request_id, start_date, end_date, person_qty, current_date])
+    name = input("What is your name? ")
+    familyName = input("What is your family name? ")
+    codeMelli = int(input("What is your melli code? "))
+    if check_codeMelli_in_personTable == True:
+        insert_data('request_personTable',['requestID', 'codeMelli'], [last_request_id, codeMelli])
+    else:
+        insert_data('personTable', ['codeMelli', 'name', 'familyName'], [codeMelli, name, familyName])
+        insert_data('request_personTable',['requestID', 'codeMelli'], [last_request_id, codeMelli])
 
 
-                if check_codeMelli_in_personTable == True:
-                    insert_data('request_personTable',['requestID', 'codeMelli'], [last_request_id, codeMelli])
-                else:
-                    insert_data('personTable', ['codeMelli', 'name', 'familyName'], [codeMelli, name, familyName])
-                    insert_data('request_personTable',['requestID', 'codeMelli'], [last_request_id, codeMelli])
+    for hamrah in range(person_qty-1):
+        name = input("What is your hamrah name? ")
+        familyName = input("What is your hamrah family name? ")
+        codeMelli = int(input("What is your hamrah melli code? "))
+
+
+        if check_codeMelli_in_personTable == True:
+            insert_data('request_personTable',['requestID', 'codeMelli'], [last_request_id, codeMelli])
+        else:
+            insert_data('personTable', ['codeMelli', 'name', 'familyName'], [codeMelli, name, familyName])
+            insert_data('request_personTable',['requestID', 'codeMelli'], [last_request_id, codeMelli])
+
 
 
 def get_empty_rooms_in_date_range(start_date, end_date):
@@ -208,21 +213,25 @@ def get_empty_rooms_in_date_range(start_date, end_date):
     if empty_rooms:
         print(f"The following rooms are empty from {start_date} to {end_date}:")
         print(", ".join(map(str, sorted(empty_rooms))))
+
+        if input("Do you want to register it? (y/n): ").lower() == "y":
+            add_request(start_date, end_date)
     else:
         print("No rooms are empty in the given date range.")
 
                
 
 
-def add_request():
+def add_request(start_date, end_date):
     """Add a new request."""
     person_qty = int(input("How many persons: "))
     room_number = int(input("What is Room Number: "))
-    start_date = get_user_jalali_date_input("start Date")
-    end_date = get_user_jalali_date_input("end Date")
+    #start_date = get_user_jalali_date_input("start Date")
+    #end_date = get_user_jalali_date_input("end Date")
     insert_data('requestTable', ['startDate', 'endDate', 'personQty', 'requestDate'],
                 [start_date, end_date, person_qty, current_date_time])
-    check_reservations_in_date_range(start_date, end_date, room_number, person_qty)
+    #check_reservations_in_date_range(start_date, end_date, room_number, person_qty)
+    registeration(room_number, person_qty)
     display_table('reserveTable')
 
 
@@ -234,8 +243,6 @@ if __name__ == '__main__':
     elif user_input == "2":
         display_table('requestTable')
     elif user_input == "3":
-        add_request()
-    elif user_input == "4":
         start_date = get_user_jalali_date_input("start Date")
         end_date = get_user_jalali_date_input("end Date")
         get_empty_rooms_in_date_range(start_date, end_date)
